@@ -13,6 +13,8 @@ check=1
 filesize = 0
 imgpath="img"#图片存放路径
 maxuse=4000#最大单次爬取文件大小
+limitsize_x=1300
+limitsize_y=768#最小图片大小限制
 if not os.path.exists(imgpath):
         os.mkdir(imgpath)
 def getHtml(url):
@@ -31,8 +33,8 @@ def imgCheck(fileName):
         imgSize = image.size
         maxsize = max(imgSize)
         minsize = min(imgSize)
-        if maxsize<1300 :
-                if minsize<768:
+        if maxsize<limitsize_x :
+                if minsize<limitsize_y:
                         image.close()
                         os.remove(fileName)
                         return 0
