@@ -11,8 +11,8 @@ http.client.HTTPConnection._http_vsn_str = 'HTTP/1.0'
 url = "http://konachan.com/post/show/"
 check=1
 filesize = 0
-imgpath="img"
-maxuse=4000
+imgpath="img"#图片存放路径
+maxuse=4000#最大单次爬取文件大小
 if not os.path.exists(imgpath):
         os.mkdir(imgpath)
 def getHtml(url):
@@ -85,7 +85,7 @@ def getImg(html):
                 return "too small"
         return fileName
 
-for i in range(1,300000):
+for i in range(1,300000):#爬取范围
         trueurl = url+str(i)
         html = getHtml(trueurl)
         if html=="error":
@@ -93,7 +93,7 @@ for i in range(1,300000):
         if i%3==0:
                 time.sleep(1)
         output = open('out', 'a')
-        outcount = open('count', 'r+')
+        outcount = open('count', 'w+')
         outcount.write(str(i))
         output.write(str(i)+": "+getImg(html)+"\n")
         output.flush()
