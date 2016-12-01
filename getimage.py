@@ -96,6 +96,7 @@ for i in range(1,300000):#爬取范围
         outcount = open('count', 'w+')
         outcount.write(str(i))
         output.write(str(i)+": "+getImg(html)+"\n")
+        print(str(i)+": "+getImg(html)+"\n")
         output.flush()
         output.close()
         outcount.flush()
