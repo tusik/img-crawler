@@ -77,7 +77,10 @@ def getImg(html):
         if fileName.find("cunnilingus")>0:
                 return "cunnilingus"
         fileName = imgpath+"/"+fileName
-        urllib.request.urlretrieve(imglist[0],fileName )
+        try:
+                urllib.request.urlretrieve(imglist[0],fileName )
+        except :
+                return "failed"
         filesize+=os.path.getsize(fileName)/1024.0/1024.0
         if filesize > maxuse:
                 print("out of max size")
