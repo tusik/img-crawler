@@ -19,8 +19,8 @@ limitsize_y=768#最小图片大小限制
 list=[]
 exitFlag = 0
 threadnum=2#线程数量
-startnum=1#开始id
-endnum=100#结束id
+startnum=0#开始id
+endnum=10#结束id
 if not os.path.exists(r"img"):
         os.mkdir("img")
 if os.path.exists("list"):
@@ -83,7 +83,10 @@ def getImg(html):
     if fileName.find("cunnilingus") > 0:
         return "cunnilingus"
     fileName = imgpath + "/" + fileName
-    urllib.request.urlretrieve(imglist[0], fileName)
+    try:
+        urllib.request.urlretrieve(imglist[0], fileName)
+    except:
+        return "error"
     filesize += os.path.getsize(fileName) / 1024.0 / 1024.0
     if filesize > maxuse:
         print("out of max size")
@@ -123,18 +126,21 @@ def get(threadName):
         lenn = len(list)
         num = random.randint(0, lenn - 1)
         trueurl = url + str(list[num])
+        tmp = str(list[num])
         html = getHtml(trueurl)
-        print(threadName+":"+str(num)+":"+getImg(html))
+        request = getImg(html)
+        print(threadName+":"+str(tmp)+":"+request)
         threadLock.acquire()
         file = open("list", "w+")
         try:
-            list.remove(list[num-1])
+            if request!="error":
+                list.remove(list[num-1])
         except:
             continue
         for i in range(0,len(list)-1):
             file.write(str(list[i]) + "\n")
         output = open('out', 'a')
-        output.write(threadName+":"+str(i) + ":" + getImg(html) + "\n")
+        output.write(threadName+":"+str(tmp) + ":" + getImg(html) + "\n")
         output.flush()
         output.close()
         file.close()
