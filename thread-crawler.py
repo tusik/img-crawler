@@ -131,12 +131,13 @@ def get(threadName):
         request = getImg(html)
         print(threadName+":"+str(tmp)+":"+request)
         threadLock.acquire()
-        file = open("list", "w+")
+        
         try:
             if request!="error":
                 list.remove(list[num-1])
         except:
             continue
+        file = open("list", "w+")
         for i in range(0,len(list)-1):
             file.write(str(list[i]) + "\n")
         output = open('out', 'a')
