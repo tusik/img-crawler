@@ -1,4 +1,4 @@
-import json,os
+import json,os,re
 import urllib.request
 url=r'http://konachan.com/post.json?page='
 proxy_handler = urllib.request.ProxyHandler({'http': 'http://127.0.0.1:1087/'})
@@ -25,6 +25,12 @@ if not os.path.exists(ext_path):
         os.mkdir(ext_path)
         for i in keyWords:
             os.mkdir(ext_path+"/"+i)
+import re
+ 
+def validateTitle(title):
+    rstr = r"[\/\\\:\*\?\"\<\>\|]" 
+    new_title = re.sub(rstr, "_", title) 
+    return new_title
 def getHtml(url):
     try:
         html = opener.open(url)
@@ -70,9 +76,9 @@ def download():
             print(str(ids[i]) + ": " + tags[i] + "." + tmps[len(tmps) - 1] + "\n")
 
             if len(tags[i]) > 140:
-                fileName = (ext_path+'/'+ext if sex_flag else path) + "/" + str(ids[i]) + tags[i][0:130] + "." + tmps[len(tmps) - 1]
+                fileName = (ext_path+'/'+ext if sex_flag else path) + "/" + str(ids[i]) + "_" + validateTitle(tags[i][0:130]) + "." + tmps[len(tmps) - 1]
             else:
-                fileName = (ext_path+'/'+ext if sex_flag else path)+"/"+str(ids[i])+ tags[i]+"."+tmps[len(tmps)-1]
+                fileName = (ext_path+'/'+ext if sex_flag else path)+"/"+str(ids[i]) + "_" + validateTitle(tags[i])+"."+tmps[len(tmps)-1]
             if file_urls[i].find('http')>=0:
                 download_url = file_urls[i]
             else: 
