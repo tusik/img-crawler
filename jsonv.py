@@ -1,9 +1,10 @@
 import json,os
 import urllib.request
 url=r'http://konachan.com/post.json?page='
-proxy_handler = urllib.request.ProxyHandler({'http': 'http://127.0.0.1:1080/'})
+proxy_handler = urllib.request.ProxyHandler({'http': 'http://127.0.0.1:1087/'})
 opener = urllib.request.build_opener(proxy_handler)
 urllib.request.install_opener(opener)
+ext_path="ext"
 path="img"
 tags=[]
 ids=[]
@@ -20,6 +21,8 @@ heights=[]
 keyWords=['nipples','penis','sex','kiss','spread_legs','pussy','cum','cunnilingus']
 if not os.path.exists(path):
         os.mkdir(path)
+if not os.path.exists(ext_path):
+        os.mkdir(ext_path)
 def getHtml(url):
     try:
         html = opener.open(url)
@@ -49,24 +52,31 @@ def download():
     output = open('out', 'a')
     for i in range(0,len(file_urls)):
         try:
-
+            sex_flag = False
             tmps = file_urls[i].split(".")
             # print(tmps[len(tmps)-1])
             for t in keyWords:
                 if tags[i].find(t)!=-1:
                     output.write(str(ids[i]) + ": " + t + "\n")
                     print(str(ids[i]) + ": " + t + "\n")
-                    continue
+                    sex_flag=True
+                    break
 
             output.write(str(ids[i]) + ": " + tags[i] + "." + tmps[len(tmps) - 1] + "\n")
             print(str(ids[i]) + ": " + tags[i] + "." + tmps[len(tmps) - 1] + "\n")
 
             if len(tags[i]) > 140:
-                fileName = path + "/" + str(ids[i]) + tags[i][0:130] + "." + tmps[len(tmps) - 1]
+                fileName = (ext_path if sex_flag else path) + "/" + str(ids[i]) + tags[i][0:130] + "." + tmps[len(tmps) - 1]
             else:
-                fileName=path+"/"+str(ids[i])+ tags[i]+"."+tmps[len(tmps)-1]
-            urllib.request.urlretrieve("http:"+file_urls[i],fileName)
-        except :
+                fileName = (ext_path if sex_flag else path)+"/"+str(ids[i])+ tags[i]+"."+tmps[len(tmps)-1]
+            if file_urls[i].find('http')>=0:
+                download_url = file_urls[i]
+            else: 
+                download_url = "http:"+file_urls[i]
+            print(fileName)
+            urllib.request.urlretrieve(download_url,fileName)
+        except Exception as e:
+            print(e)
             output.write(str(ids[i]) + ": " + "failed" + "\n")
             return "failed"
         output.flush()
