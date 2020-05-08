@@ -23,6 +23,8 @@ if not os.path.exists(path):
         os.mkdir(path)
 if not os.path.exists(ext_path):
         os.mkdir(ext_path)
+        for i in keyWords:
+            os.mkdir(ext_path+"/"+i)
 def getHtml(url):
     try:
         html = opener.open(url)
@@ -53,6 +55,7 @@ def download():
     for i in range(0,len(file_urls)):
         try:
             sex_flag = False
+            ext = ''
             tmps = file_urls[i].split(".")
             # print(tmps[len(tmps)-1])
             for t in keyWords:
@@ -60,15 +63,16 @@ def download():
                     output.write(str(ids[i]) + ": " + t + "\n")
                     print(str(ids[i]) + ": " + t + "\n")
                     sex_flag=True
+                    ext = t
                     break
 
             output.write(str(ids[i]) + ": " + tags[i] + "." + tmps[len(tmps) - 1] + "\n")
             print(str(ids[i]) + ": " + tags[i] + "." + tmps[len(tmps) - 1] + "\n")
 
             if len(tags[i]) > 140:
-                fileName = (ext_path if sex_flag else path) + "/" + str(ids[i]) + tags[i][0:130] + "." + tmps[len(tmps) - 1]
+                fileName = (ext_path+'/'+ext if sex_flag else path) + "/" + str(ids[i]) + tags[i][0:130] + "." + tmps[len(tmps) - 1]
             else:
-                fileName = (ext_path if sex_flag else path)+"/"+str(ids[i])+ tags[i]+"."+tmps[len(tmps)-1]
+                fileName = (ext_path+'/'+ext if sex_flag else path)+"/"+str(ids[i])+ tags[i]+"."+tmps[len(tmps)-1]
             if file_urls[i].find('http')>=0:
                 download_url = file_urls[i]
             else: 
