@@ -1,6 +1,8 @@
 import json,os,re
 import urllib.request
-import socket
+import socket,time
+import _thread
+
 socket.setdefaulttimeout(15)
 url=r'http://konachan.com/post.json?page='
 proxy_handler = urllib.request.ProxyHandler({'http': 'http://127.0.0.1:1087/'})
@@ -20,6 +22,8 @@ file_sizes=[]
 file_urls=[]
 widths=[]
 heights=[]
+max_thread=10
+current_thread=0
 keyWords=['nipples','penis','sex','kiss','spread_legs','pussy','cum','cunnilingus']
 if not os.path.exists(path):
         os.mkdir(path)
@@ -58,6 +62,22 @@ def splitInfo(obj):
         scores.append(tmp['score'])
         file_sizes.append(tmp['file_size'])
         file_urls.append(tmp['file_url'])
+def downloads(url,filename,output):
+    global current_thread
+
+    try:
+        urllib.request.urlretrieve(url,filename)
+    except Exception as e:
+        print(e)
+        lock = _thread.allocate_lock()
+        lock.acquire()
+        output.write(str(ids[i]) + ": " + "failed" + "\n")
+        lock.release()
+    finally:
+        lock = _thread.allocate_lock()
+        lock.acquire()
+        current_thread = current_thread-1
+        lock.release();
 def download():
     output = open('out', 'a')
     for i in range(0,len(file_urls)):
@@ -85,8 +105,13 @@ def download():
                 download_url = file_urls[i]
             else: 
                 download_url = "http:"+file_urls[i]
+            
             if not os.path.exists(fileName):
-                urllib.request.urlretrieve(download_url,fileName)
+                global current_thread,max_thread
+                while current_thread>max_thread:
+                    time.sleep(1)
+                current_thread = current_thread+1
+                _thread.start_new_thread(downloads,(download_url,fileName,output))
                 
         except Exception as e:
             print(e)
