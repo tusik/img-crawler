@@ -1,5 +1,7 @@
 import json,os,re
 import urllib.request
+import socket
+socket.setdefaulttimeout(15)
 url=r'http://konachan.com/post.json?page='
 proxy_handler = urllib.request.ProxyHandler({'http': 'http://127.0.0.1:1087/'})
 opener = urllib.request.build_opener(proxy_handler)
@@ -85,6 +87,7 @@ def download():
                 download_url = "http:"+file_urls[i]
             if not os.path.exists(fileName):
                 urllib.request.urlretrieve(download_url,fileName)
+                
         except Exception as e:
             print(e)
             output.write(str(ids[i]) + ": " + "failed" + "\n")
