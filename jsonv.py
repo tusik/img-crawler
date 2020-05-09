@@ -83,8 +83,8 @@ def download():
                 download_url = file_urls[i]
             else: 
                 download_url = "http:"+file_urls[i]
-            print(fileName)
-            urllib.request.urlretrieve(download_url,fileName)
+            if not os.path.exists(fileName):
+                urllib.request.urlretrieve(download_url,fileName)
         except Exception as e:
             print(e)
             output.write(str(ids[i]) + ": " + "failed" + "\n")
